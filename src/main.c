@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include "default_dns_resolver.h"
 
 struct dns_question_format{
     uint16_t qtype; // type of question
@@ -35,42 +36,58 @@ struct dns_request_format{
     struct dns_resource_record_format additional_records[1]; // array of additional records
 };
 
+struct resolvers {
+    int current_index;
+    char *primary;
+    char *secondary;
+    char *tertiary;
+};
+
 int main(int argc,char *argv[]){
-    char* default_dns_server = "8.8.8.8";
+    struct resolvers resolvers = {.current_index = 0, .primary = get_default_dns_resolver(), .secondary = "1.1.1.1", .tertiary = "8.8.8.8"};
     char *hostname = "";
-    
+
     if(argc < 2){
-        printf("Incorrect usage: ./lookup hostname/domain [options:dns_server]");
+        printf("Incorrect usage: ./lookup hostname/domain (options:dns_server)");
         exit(1);
     }
     hostname = argv[1];
     if(argc == 3){
-        default_dns_server = argv[2];
+        resolvers.primary = argv[2];
     }
 
     if(argc > 3){
-        printf("Too many arguments: Incorrect usage: ./lookup hostname/domain [options:dns_server]");
+        printf("Too many arguments: Incorrect usage: ./lookup hostname/domain (options:dns_server)");
         exit(1);
     }
 
     struct sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(53);
-    
-    if(inet_pton(AF_INET, default_dns_server, &server_addr.sin_addr)  == -1 ){
-        printf("Invalid DNS server address: %s\n", default_dns_server);
-        exit(1);
-    }
 
-    int sock_fd = socket(AF_INET,SOCK_DGRAM,0);
-    if(sock_fd == -1){
-        perror("socket");
-        exit(1);
-    }
+    for(int i = 0 ; i < 3 ; i++){
+        if(i == 0){
+            if(inet_pton(AF_INET, resolvers.primary, &server_addr.sin_addr)  != -1 ){
+                printf("Invalid DNS server address: %s\n", resolvers.primary);
+                break;
+            }
+        }else if(i == 1){
+            if(inet_pton(AF_INET, resolvers.secondary, &server_addr.sin_addr)  != -1 ){
+                printf("Invalid DNS server address: %s\n", resolvers.secondary);
+                break;
+            }
+        }else if(i == 2){
+            if(inet_pton(AF_INET, resolvers.tertiary, &server_addr.sin_addr)  != -1 ){
+                printf("Invalid DNS server address: %s\n", resolvers.tertiary);
+                break;
+            }
+        }
 
-    if(connect(sock_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1){
-        perror("connect");
-        exit(1);
+        if(i == 2){
+            printf("No valid DNS server address found\n");
+            exit(1);
+        }
+        
     }
 
     char request[512]; //dns request is 512 bytes
@@ -92,22 +109,22 @@ int main(int argc,char *argv[]){
     uint16_t ancount = htons(0);
     memcpy(request + sizeof(id) + sizeof(flags) + sizeof(qdcount),
            &ancount, sizeof(ancount));
-    
+
     uint16_t nscount = htons(0);
     memcpy(request + sizeof(id) + sizeof(flags) + sizeof(qdcount) + sizeof(ancount),
            &nscount, sizeof(nscount));
-    
+
     uint16_t arcount = htons(0);
     memcpy(request + sizeof(id) + sizeof(flags) + sizeof(qdcount) + sizeof(ancount) + sizeof(nscount),
            &arcount, sizeof(arcount));
 
-    
 
-    
 
-    
-    
-    
 
-   
+
+
+
+
+
+
 }
