@@ -8,9 +8,9 @@ char* get_default_dns_resolver() {
     if (status!=0) {
         return NULL;
     }
-    
+
     char *resolvers = malloc(1024);
-    
+
     if (resolvers == NULL) {
         return NULL;
     }

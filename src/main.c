@@ -6,7 +6,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#include "default_dns_resolver.h"
+#include "../include/default_dns_resolver.h"
 
 struct dns_question_format{
     uint16_t qtype; // type of question
@@ -68,17 +68,17 @@ int main(int argc,char *argv[]){
     for(int i = 0 ; i < 3 ; i++){
         if(i == 0){
             if(inet_pton(AF_INET, resolvers.primary, &server_addr.sin_addr)  != -1 ){
-                printf("Invalid DNS server address: %s\n", resolvers.primary);
+                resolvers.current_index = 0;
                 break;
             }
         }else if(i == 1){
             if(inet_pton(AF_INET, resolvers.secondary, &server_addr.sin_addr)  != -1 ){
-                printf("Invalid DNS server address: %s\n", resolvers.secondary);
+                resolvers.current_index = 1;
                 break;
             }
         }else if(i == 2){
             if(inet_pton(AF_INET, resolvers.tertiary, &server_addr.sin_addr)  != -1 ){
-                printf("Invalid DNS server address: %s\n", resolvers.tertiary);
+                resolvers.current_index = 2;
                 break;
             }
         }
