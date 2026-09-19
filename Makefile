@@ -1,2 +1,2 @@
 build : 
-	gcc src/main.c src/default_dns_resolver.c -lresolv -o lookup
+	gcc src/main.c src/dns_resolver.c src/cli_parser.c -lresolv -o lookup

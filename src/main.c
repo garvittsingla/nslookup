@@ -1,12 +1,13 @@
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#include "../include/default_dns_resolver.h"
+#include "../include/dns_resolver.h"
+#include "../include/common.h"
+#include "../include/cli_parser.h"
 
 struct dns_question_format{
     uint16_t qtype; // type of question
@@ -36,60 +37,20 @@ struct dns_request_format{
     struct dns_resource_record_format additional_records[1]; // array of additional records
 };
 
-struct resolvers {
-    int current_index;
-    char *primary;
-    char *secondary;
-    char *tertiary;
-};
 
 int main(int argc,char *argv[]){
     struct resolvers resolvers = {.current_index = 0, .primary = get_default_dns_resolver(), .secondary = "1.1.1.1", .tertiary = "8.8.8.8"};
     char *hostname = "";
-
-    if(argc < 2){
-        printf("Incorrect usage: ./lookup hostname/domain (options:dns_server)");
-        exit(1);
-    }
-    hostname = argv[1];
-    if(argc == 3){
-        resolvers.primary = argv[2];
-    }
-
-    if(argc > 3){
-        printf("Too many arguments: Incorrect usage: ./lookup hostname/domain (options:dns_server)");
-        exit(1);
-    }
+    
+    parse_cli(argc,argv,hostname,&resolvers);
 
     struct sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(53);
 
-    for(int i = 0 ; i < 3 ; i++){
-        if(i == 0){
-            if(inet_pton(AF_INET, resolvers.primary, &server_addr.sin_addr)  != -1 ){
-                resolvers.current_index = 0;
-                break;
-            }
-        }else if(i == 1){
-            if(inet_pton(AF_INET, resolvers.secondary, &server_addr.sin_addr)  != -1 ){
-                resolvers.current_index = 1;
-                break;
-            }
-        }else if(i == 2){
-            if(inet_pton(AF_INET, resolvers.tertiary, &server_addr.sin_addr)  != -1 ){
-                resolvers.current_index = 2;
-                break;
-            }
-        }
+    set_default_dns_resolver(resolvers,&server_addr);
 
-        if(i == 2){
-            printf("No valid DNS server address found\n");
-            exit(1);
-        }
-        
-    }
-
+    printf("resolver: %s\n", resolvers.primary);
     char request[512]; //dns request is 512 bytes
 
     memset(request, 0, sizeof(request));
@@ -117,14 +78,5 @@ int main(int argc,char *argv[]){
     uint16_t arcount = htons(0);
     memcpy(request + sizeof(id) + sizeof(flags) + sizeof(qdcount) + sizeof(ancount) + sizeof(nscount),
            &arcount, sizeof(arcount));
-
-
-
-
-
-
-
-
-
 
 }
