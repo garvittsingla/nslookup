@@ -53,5 +53,5 @@ struct dns_request_format{
 ```
 
 ## from where i learnt?
-1. beej's guide to network programming(best for socket programming) ![](https://beej.us/guide/bgnet/html/multi/)
-2. dns header and packet format ![](https://support.huawei.com/enterprise/en/doc/EDOC1100174721/f917b5d7/dns)
+1. beej's guide to network programming(best for socket programming) ![here](https://beej.us/guide/bgnet/html/multi/)
+2. dns header and packet format ![here](https://support.huawei.com/enterprise/en/doc/EDOC1100174721/f917b5d7/dns/)

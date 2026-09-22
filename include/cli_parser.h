@@ -12,6 +12,6 @@
  * @param hostname the hostname to resolve
  * @param resolvers the resolvers to set
  */
-void parse_cli(int argc, char* argv[],char *hostname,struct resolvers *resolvers);
+void parse_cli(int argc, char* argv[],char **hostname,struct resolvers *resolvers);
 
 #endif
