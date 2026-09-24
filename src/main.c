@@ -29,5 +29,7 @@ int main(int argc, char *argv[]) {
   printf("resolver: %s\n", resolvers.primary);
   char request[512];
 
-  populate_request(request, &hostname);
+  int bytes_populated = populate_request(request, &hostname);
+
+  
 }

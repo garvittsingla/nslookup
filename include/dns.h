@@ -48,8 +48,10 @@
 /**
  * make the dns request
  * @param request pointer to populate
+ * @param hostname hostname to resolve
+ * @return size of request
  */
-void populate_request(char *request, char** hostname);
+int populate_request(char *request, char** hostname);
 
 /**
  * make the dns request header 
@@ -62,8 +64,10 @@ int populate_request_header(char *request);
  * make the dns request questions
  * @param request pointer to populate
  * @param header_size size of the request header
+ * @param hostname hostname to resolve
+ * @return size of request
  */
-void populate_request_questions(char *request, int header_size,char** hostname);
+int populate_request_questions(char *request, int header_size,char** hostname);
 
 /**
  * populate the dns request flags
