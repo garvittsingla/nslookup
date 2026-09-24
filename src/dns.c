@@ -1,26 +1,28 @@
 #include "../include/dns.h"
 
 int populate_request(char *request, char **hostname) {
-  printf("hostname %s\n", *hostname);
+
   int size = populate_request_header(request);
   size += populate_request_questions(request, size, hostname);
   return size;
-  
 }
 
-int populate_request_questions(char *request, int header_size,char **hostname) {
+int populate_request_questions(char *request, int header_size,
+                               char **hostname) {
   char *qname = qname_from_hostname(hostname);
-  uint16_t qtype = DNS_QTYPE_A;
-  qtype = htons(qtype);
-  uint16_t qclass = 1;
-  qclass = htons(qclass);
   int size = 0;
-  memcpy(request+header_size,&qtype,sizeof(qtype));
+  memcpy(request + header_size + size, qname, strlen(qname) + 1);
+  size += strlen(qname) + 1;
+  uint16_t qtype = htons(DNS_QTYPE_NS);
+
+  memcpy(request + header_size + size, &qtype, sizeof(qtype));
   size += sizeof(qtype);
-  memcpy(request+header_size+size,&qclass,sizeof(qclass));
+
+  uint16_t qclass = htons(1);
+
+  memcpy(request + header_size + size, &qclass, sizeof(qclass));
   size += sizeof(qclass);
-  memcpy(request+header_size+size,&qname,strlen(qname)+1);
-  size += strlen(qname)+1;
+
   return size;
 }
 

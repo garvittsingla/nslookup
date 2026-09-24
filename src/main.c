@@ -31,5 +31,28 @@ int main(int argc, char *argv[]) {
 
   int bytes_populated = populate_request(request, &hostname);
 
-  
+  printf("DNS resolver = %s\n", resolvers.primary);
+  printf("DNS IP = %s\n", inet_ntoa(server_addr.sin_addr));
+  printf("DNS port = %d\n", ntohs(server_addr.sin_port));
+
+  int sock = socket(AF_INET, SOCK_DGRAM, 0);
+
+  int bytes_send = sendto(sock, request, bytes_populated, 0,
+                          (struct sockaddr *)&server_addr, sizeof(server_addr));
+
+  printf("bytes sent: %d\n", bytes_send);
+  if (bytes_send < bytes_populated) {
+    perror("sendto");
+    return 1;
+  }
+
+  char response[512];
+
+  int bytes_recv = recvfrom(sock, response, sizeof(response), 0, NULL, NULL);
+
+  printf("bytes recieved: %d\n", bytes_recv);
+  if (bytes_recv == -1) {
+    perror("recvfrom");
+    return 1;
+  }
 }
