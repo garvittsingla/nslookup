@@ -55,4 +55,6 @@ int main(int argc, char *argv[]) {
     perror("recvfrom");
     return 1;
   }
+
+  display_response(response, bytes_recv);
 }

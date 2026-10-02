@@ -13,7 +13,7 @@ int populate_request_questions(char *request, int header_size,
   int size = 0;
   memcpy(request + header_size + size, qname, strlen(qname) + 1);
   size += strlen(qname) + 1;
-  uint16_t qtype = htons(DNS_QTYPE_NS);
+  uint16_t qtype = htons(DNS_QTYPE_A);
 
   memcpy(request + header_size + size, &qtype, sizeof(qtype));
   size += sizeof(qtype);
@@ -114,4 +114,51 @@ char *qname_from_hostname(char **hostname) {
 
   printf("\n");
   return qname;
+}
+
+void display_response(char *response, int bytes_recv) {
+
+    int size = 0;
+    
+    uint16_t id = 0;
+    memcpy(&id, response, sizeof(id));
+    size += sizeof(id);
+    id = ntohs(id);
+    printf("id: %d\n", id);
+
+    uint16_t flags = 0;
+    memcpy(&flags, response + size, sizeof(flags));
+    size += sizeof(flags);
+    flags = ntohs(flags);
+    printf("flags: %d\n", flags);
+
+    uint16_t qdcount = 0;
+    memcpy(&qdcount, response + size, sizeof(qdcount));
+    size += sizeof(qdcount);
+    qdcount = ntohs(qdcount);
+    printf("qdcount: %d\n", qdcount);
+
+    uint16_t ancount = 0;
+    memcpy(&ancount, response + size, sizeof(ancount));
+    size += sizeof(ancount);
+    ancount = ntohs(ancount);
+    printf("ancount: %d\n", ancount);
+
+    uint16_t nscount = 0;
+    memcpy(&nscount, response + size, sizeof(nscount));
+    size += sizeof(nscount);
+    nscount = ntohs(nscount);
+    printf("nscount: %d\n", nscount);
+
+    uint16_t arcount = 0;
+    memcpy(&arcount, response + size, sizeof(arcount));
+    size += sizeof(arcount);
+    arcount = ntohs(arcount);
+    printf("arcount: %d\n", arcount);
+
+    //skip the question section
+    // 
+   
+    
+    
 }

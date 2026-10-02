@@ -82,4 +82,11 @@ uint16_t populate_request_flags();
  */
 char* qname_from_hostname(char **hostname);
 
+/**
+ * display the response
+ * @param response response to display
+ * @param bytes_recv number of bytes received
+ */
+void display_response(char *response, int bytes_recv);
+
 #endif
