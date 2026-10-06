@@ -1,7 +1,7 @@
 # custom nslookup in c uing unix socket API
 
 # demo
-[![Watch the video](./docs/demo.mov)
+[![Watch the video](./docs/output.gif)
 
 ## usage 
 
