@@ -13,7 +13,7 @@ char *get_default_dns_resolver() {
     return NULL;
   }
 
-  if (inet_ntop(AF_INET, &_res.nsaddr_list[1].sin_addr, resolvers,
+  if (inet_ntop(AF_INET, &_res.nsaddr_list[0].sin_addr, resolvers,
                 INET_ADDRSTRLEN) == NULL) {
     free(resolvers);
     return NULL;
