@@ -1,5 +1,8 @@
 # custom nslookup in c uing unix socket API
 
+# demo
+[![Watch the video](./docs/demo.mov)
+
 ## usage 
 
 ```bash
