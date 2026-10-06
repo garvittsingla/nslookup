@@ -1,4 +1,5 @@
 #include "../include/dns_resolver.h"
+#include <stdio.h>
 
 char *get_default_dns_resolver() {
   int status = res_init();
@@ -25,18 +26,20 @@ void set_default_dns_resolver(struct resolvers resolvers,
 
   for (int i = 0; i < 3; i++) {
     if (i == 0) {
-      if (inet_pton(AF_INET, resolvers.primary, &server_addr->sin_addr) ==1 ) {
+      if (inet_pton(AF_INET, resolvers.primary, &server_addr->sin_addr) == 1) {
         resolvers.current_index = 0;
         break;
-      }
+      } else if(inet_pton(AF_INET, resolvers.primary, &server_addr->sin_addr) != 1)
+        printf(
+            "No default IPV4 address found, switching to backup Resolver\n ");
     } else if (i == 1) {
-      if (inet_pton(AF_INET, resolvers.secondary, &server_addr->sin_addr) ==1
-          ) {
+      if (inet_pton(AF_INET, resolvers.secondary, &server_addr->sin_addr) ==
+          1) {
         resolvers.current_index = 1;
         break;
       }
     } else if (i == 2) {
-      if (inet_pton(AF_INET, resolvers.tertiary, &server_addr->sin_addr) ==1) {
+      if (inet_pton(AF_INET, resolvers.tertiary, &server_addr->sin_addr) == 1) {
         resolvers.current_index = 2;
         break;
       }
