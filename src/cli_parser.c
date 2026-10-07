@@ -1,4 +1,4 @@
-#include "../include/cli_parser.h"
+#include "cli_parser.h"
 
 void parse_cli(int argc, char *argv[], char **hostname,
                struct resolvers *resolvers) {

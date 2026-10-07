@@ -1,5 +1,5 @@
-build : 
-	gcc -w src/main.c src/dns.c src/dns_resolver.c src/cli_parser.c -lresolv -o lookup
+build :
+	gcc -w -Iinclude -Isrc src/main.c src/dns.c src/dns_resolver.c src/cli_parser.c -lresolv -o lookup
 
 lint :
-	clang-format -i src/*.c 
+	clang-format -i src/*.c

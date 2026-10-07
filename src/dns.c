@@ -1,4 +1,4 @@
-#include "../include/dns.h"
+#include "dns.h"
 
 int populate_request(char *request, char **hostname) {
 
@@ -155,7 +155,7 @@ void display_response(char *response, int bytes_recv) {
   size += sizeof(arcount);
   arcount = ntohs(arcount);
   printf("arcount: %d\n", arcount);
-  
+
 for (uint16_t i = 0; i < qdcount; i++) {
     while ((char)response[size] != 0) {
         size += (char)response[size] + 1;
@@ -166,57 +166,57 @@ for (uint16_t i = 0; i < qdcount; i++) {
       size += 2;
       size += 2;
     }
-  
+
     for (uint16_t i = 0; i < ancount; i++) {
-  
+
       printf("\nAnswer %d\n", i + 1);
-  
+
       if (((char)response[size] & 0xC0) == 0xC0) {
         size += 2;
       } else {
         while ((unsigned char)response[size] != 0) {
           size += (unsigned char)response[size] + 1;
         }
-  
+
         size++;
       }
-  
+
       uint16_t type = 0;
       memcpy(&type, response + size, sizeof(type));
       size += sizeof(type);
       type = ntohs(type);
       printf("type: %d, ", type);
-  
+
       uint16_t class = 0;
       memcpy(&class, response + size, sizeof(class));
       size += sizeof(class);
       class = ntohs(class);
       printf("class: %d, ", class);
-  
+
       uint32_t ttl = 0;
       memcpy(&ttl, response + size, sizeof(ttl));
       size += sizeof(ttl);
       ttl = ntohl(ttl);
       printf("ttl: %u, ", ttl);
-  
+
       uint16_t rdlength = 0;
       memcpy(&rdlength, response + size, sizeof(rdlength));
       size += sizeof(rdlength);
       rdlength = ntohs(rdlength);
       printf("rdlength: %d,", rdlength);
- 
+
       char *answer_buff = malloc(rdlength);
       if (answer_buff == NULL) {
         return;
       }
       memcpy(answer_buff, response + size, rdlength);
       size += rdlength;
-  
-  
+
+
       if (type == DNS_QTYPE_A && rdlength == 4) {
-  
+
         char ip[INET_ADDRSTRLEN];
-  
+
         inet_ntop(
             AF_INET,
             answer_buff,
@@ -224,18 +224,18 @@ for (uint16_t i = 0; i < qdcount; i++) {
             sizeof(ip)
         );
         printf("address: %s", ip);
-  
+
       } else {
-  
+
         printf("RDATA: ");
-  
+
         for (uint16_t j = 0; j < rdlength; j++) {
           printf("%02x ", (unsigned char)answer_buff[j]);
         }
-  
+
         // printf("\n");
       }
-  
+
       free(answer_buff);
     }
 }

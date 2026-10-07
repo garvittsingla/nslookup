@@ -1,7 +1,7 @@
-#include "../include/cli_parser.h"
-#include "../include/common.h"
-#include "../include/dns.h"
-#include "../include/dns_resolver.h"
+#include "cli_parser.h"
+#include "common.h"
+#include "dns.h"
+#include "dns_resolver.h"
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <stdio.h>
@@ -51,8 +51,8 @@ int main(int argc, char *argv[]) {
   int bytes_recv = recvfrom(sock, response, sizeof(response), 0, NULL, NULL);
 
   printf("bytes recieved: %d\n", bytes_recv);
-  if (bytes_recv == -1) {
-    perror("recvfrom");
+  if (bytes_recv == -1 || bytes_recv == bytes_send) {
+    perror("No domain exits/ DNS error\n");
     return 1;
   }
 

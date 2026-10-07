@@ -1,4 +1,4 @@
-#include "../include/dns_resolver.h"
+#include "dns_resolver.h"
 #include <stdio.h>
 
 char *get_default_dns_resolver() {
