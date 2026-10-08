@@ -19,7 +19,7 @@ jobs:
 
       - name: Build
         run: |
-          gcc main.c -o lookup
+          make
 
       - name: Package
         run: |
