@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    name: Build linux
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          gcc main.c -o lookup
+
+      - name: Package
+        run: |
+          tar -czf nslookup-linux-x86_64.tar.gz lookup
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nslookup-linux-x86_64
+          path: nslookup-linux-x86_64.tar.gz
+    
+  release:
+    name: Create Release
+    needs: linux
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nslookup-linux-x86_64
+          path: release
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/nslookup-linux-x86_64.tar.gz
+          generate_release_notes: true
